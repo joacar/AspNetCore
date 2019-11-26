@@ -58,17 +58,16 @@ namespace Microsoft.AspNetCore.Hosting
 
             HttpContext httpContext;
             if (_defaultHttpContextFactory != null)
-            {
-                var defaultHttpContext = (DefaultHttpContext)hostContext.HttpContext;
-                if (defaultHttpContext is null)
+            {                
+                if (hostContext.HttpContext is DefaultHttpContext defaultHttpContext)
                 {
-                    httpContext = _defaultHttpContextFactory.Create(contextFeatures);
-                    hostContext.HttpContext = httpContext;
+                    _defaultHttpContextFactory.Initialize(defaultHttpContext, contextFeatures);
+                    httpContext = defaultHttpContext;                   
                 }
                 else
                 {
-                    _defaultHttpContextFactory.Initialize(defaultHttpContext, contextFeatures);
-                    httpContext = defaultHttpContext;
+                    httpContext = _defaultHttpContextFactory.Create(contextFeatures);
+                    hostContext.HttpContext = httpContext;
                 }
             }
             else
